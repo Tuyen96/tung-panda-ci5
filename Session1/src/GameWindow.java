@@ -102,11 +102,10 @@ public class GameWindow extends Frame implements Runnable {
             public void mouseDragged(MouseEvent e) {
 
             }
-
             @Override
             public void mouseMoved(MouseEvent e) {
-                planeX1 = e.getX();
-                planeY1 = e.getY();
+                planeX1 = e.getX() - 35;
+                planeY1 = e.getY() - 31;
             }
         });
         try {

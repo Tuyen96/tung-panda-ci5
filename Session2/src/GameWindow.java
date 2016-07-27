@@ -201,13 +201,17 @@ public class GameWindow extends Frame implements Runnable {
                 while (enemyIterator.hasNext()){
                     Plane enemy = enemyIterator.next();
                     enemy.move();
+                    if(enemy.y > 530) {
+                        enemyIterator.remove();
+                        break;
+                    }
                     Rectangle enemyRectangle = new Rectangle(enemy.x, enemy.y, enemyImage.getWidth(null), enemyImage.getHeight(null));
 
                     Iterator<Bullet> bulletIterator = bulletVector.iterator();
                     while (bulletIterator.hasNext()) {
                         Bullet bullet = bulletIterator.next();
                         Rectangle bulletRectangle = new Rectangle(bullet.x, bullet.y, bulletImage.getWidth(null), bulletImage.getHeight(null));
-                        if(enemyRectangle.intersects(bulletRectangle)){
+                        if (enemyRectangle.intersects(bulletRectangle)) {
                             enemyIterator.remove();
                             bulletIterator.remove();
                             break;

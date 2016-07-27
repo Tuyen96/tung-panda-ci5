@@ -1,3 +1,4 @@
+import Models.Bullet;
 import Models.Plane;
 
 import javax.imageio.ImageIO;
@@ -6,6 +7,9 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Vector;
 
 /**
  * Created by tungb on 7/24/2016.
@@ -18,12 +22,14 @@ public class GameWindow extends Frame implements Runnable {
     Image enemy3;
     Image plane1Image;
     Plane plane1;
-//    int planeX = 240;
+    //    int planeX = 240;
 //    int planeY = 430;
     Image plane2Image;
     Plane plane2;
-//    int planeX1 = 320;
+    //    int planeX1 = 320;
 //    int planeY1 = 430;
+    Vector<Bullet> bulletVector;
+    Image bulletImage;
     //thread
     Thread thread;
     //graphic
@@ -74,38 +80,37 @@ public class GameWindow extends Frame implements Runnable {
         });
         plane1 = new Plane(240, 430);
         plane2 = new Plane(320, 430);
+        bulletVector = new Vector<>();
         this.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
             }
+
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:
-                        plane1.dx = -10;
-                        plane1.dy = 0;
-                        plane1.move();
+                        plane1.moveTo(plane1.x - 10, plane1.y);
                         break;
                     case KeyEvent.VK_RIGHT:
-                        plane1.dx = 10;
-                        plane1.dy = 0;
-                        plane1.move();
+                        plane1.moveTo(plane1.x + 10, plane1.y);
                         break;
                     case KeyEvent.VK_UP:
-                        plane1.dy = -10;
-                        plane1.dx = 0;
-                        plane1.move();
+                        plane1.moveTo(plane1.x, plane1.y - 10);
                         break;
                     case KeyEvent.VK_DOWN:
-                        plane1.dy = 10;
-                        plane1.dx = 0;
-                        plane1.move();
+                        plane1.moveTo(plane1.x, plane1.y + 10);
                         break;
+                    case KeyEvent.VK_SPACE:
+                        bulletVector.add(new Bullet(plane1.x + 35, 0, plane1.y, -10));
+                        System.out.println();
+                        break;
+
                 }
             }
+
             @Override
             public void keyReleased(KeyEvent e) {
-                System.out.println("release");
             }
         });
         this.addMouseMotionListener(new MouseMotionListener() {
@@ -113,16 +118,19 @@ public class GameWindow extends Frame implements Runnable {
             public void mouseDragged(MouseEvent e) {
 
             }
+
             @Override
             public void mouseMoved(MouseEvent e) {
-                plane2.x = e.getX() - 35;
-                plane2.y = e.getY() - 31;
+                plane2.moveTo(e.getX() - 35, e.getY() - 31);
+//                plane2.x = e.getX() - 35;
+//                plane2.y = e.getY() - 31;
             }
         });
         try {
             background = ImageIO.read(new File("resources/background.png"));
             plane1Image = ImageIO.read(new File("resources/plane3.png"));
             plane2Image = ImageIO.read(new File("resources/plane4.png"));
+            bulletImage = ImageIO.read(new File("resources/bullet.png"));
 //            enemy1 = ImageIO.read(new File("resources/enemy_plane_white_1.png"));
 //            enemy2 = ImageIO.read(new File("resources/enemy_plane_white_2.png"));
 //            enemy3 = ImageIO.read(new File("resources/enemy_plane_white_3.png"));
@@ -141,6 +149,11 @@ public class GameWindow extends Frame implements Runnable {
         bufferImageGraphics.drawImage(background, 0, 0, null);
         bufferImageGraphics.drawImage(plane1Image, plane1.x, plane1.y, null);
         bufferImageGraphics.drawImage(plane2Image, plane2.x, plane2.y, null);
+        for(Bullet bullet : bulletVector)
+            bufferImageGraphics.drawImage(bulletImage, bullet.x, bullet.y, null);
+//        if(bullet != null) {
+//            bufferImageGraphics.drawImage(bulletImage, bullet.x, bullet.y, null);
+//        }
 //        bufferImageGraphics.drawImage(enemy1, 60, 40, null);
 //        bufferImageGraphics.drawImage(enemy2, 260, 40, null);
 //        bufferImageGraphics.drawImage(enemy3, 460, 40, null);
@@ -152,6 +165,13 @@ public class GameWindow extends Frame implements Runnable {
         while (true) {
             try {
                 thread.sleep(40);
+                Iterator<Bullet> bulletIterator = bulletVector.iterator();
+                while (bulletIterator.hasNext()){
+                    Bullet bullet = bulletIterator.next();
+                    bullet.move();
+                    if(bullet.y < -20)
+                        bulletIterator.remove();
+                }
                 repaint();
             } catch (InterruptedException e) {
                 e.printStackTrace();

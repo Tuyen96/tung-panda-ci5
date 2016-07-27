@@ -6,7 +6,7 @@ import java.io.IOException;
 /**
  * Created by tungb on 7/27/2016.
  */
-public class Plane {
+public class Plane implements Movalbe{
     int x;
     int y;
     Image image;

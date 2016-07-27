@@ -11,6 +11,13 @@ public class Plane {
     public int dx;
     public int dy;
 
+    public Plane(int x, int dx, int y, int dy) {
+        this.x = x;
+        this.dx = dx;
+        this.y = y;
+        this.dy = dy;
+    }
+
     public Plane(int x, int y) {
         this.x = x;
         this.y = y;

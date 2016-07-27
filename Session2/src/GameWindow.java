@@ -1,3 +1,5 @@
+import Models.Plane;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.*;
@@ -14,14 +16,14 @@ public class GameWindow extends Frame implements Runnable {
     Image enemy1;
     Image enemy2;
     Image enemy3;
-    //player0
-    Image player;
-    int planeX = 240;
-    int planeY = 430;
-    //player1
-    Image player1;
-    int planeX1 = 320;
-    int planeY1 = 430;
+    Image plane1Image;
+    Plane plane1;
+//    int planeX = 240;
+//    int planeY = 430;
+    Image plane2Image;
+    Plane plane2;
+//    int planeX1 = 320;
+//    int planeY1 = 430;
     //thread
     Thread thread;
     //graphic
@@ -70,6 +72,8 @@ public class GameWindow extends Frame implements Runnable {
 
             }
         });
+        plane1 = new Plane(240, 430);
+        plane2 = new Plane(320, 430);
         this.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -78,16 +82,24 @@ public class GameWindow extends Frame implements Runnable {
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:
-                        planeX -= 10;
+                        plane1.dx = -10;
+                        plane1.dy = 0;
+                        plane1.move();
                         break;
                     case KeyEvent.VK_RIGHT:
-                        planeX += 10;
+                        plane1.dx = 10;
+                        plane1.dy = 0;
+                        plane1.move();
                         break;
                     case KeyEvent.VK_UP:
-                        planeY -= 10;
+                        plane1.dy = -10;
+                        plane1.dx = 0;
+                        plane1.move();
                         break;
                     case KeyEvent.VK_DOWN:
-                        planeY += 10;
+                        plane1.dy = 10;
+                        plane1.dx = 0;
+                        plane1.move();
                         break;
                 }
             }
@@ -103,17 +115,17 @@ public class GameWindow extends Frame implements Runnable {
             }
             @Override
             public void mouseMoved(MouseEvent e) {
-                planeX1 = e.getX() - 35;
-                planeY1 = e.getY() - 31;
+                plane2.x = e.getX() - 35;
+                plane2.y = e.getY() - 31;
             }
         });
         try {
             background = ImageIO.read(new File("resources/background.png"));
-            player = ImageIO.read(new File("resources/plane3.png"));
-            player1 = ImageIO.read(new File("resources/plane4.png"));
-            enemy1 = ImageIO.read(new File("resources/enemy_plane_white_1.png"));
-            enemy2 = ImageIO.read(new File("resources/enemy_plane_white_2.png"));
-            enemy3 = ImageIO.read(new File("resources/enemy_plane_white_3.png"));
+            plane1Image = ImageIO.read(new File("resources/plane3.png"));
+            plane2Image = ImageIO.read(new File("resources/plane4.png"));
+//            enemy1 = ImageIO.read(new File("resources/enemy_plane_white_1.png"));
+//            enemy2 = ImageIO.read(new File("resources/enemy_plane_white_2.png"));
+//            enemy3 = ImageIO.read(new File("resources/enemy_plane_white_3.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -127,11 +139,11 @@ public class GameWindow extends Frame implements Runnable {
     public void update(Graphics g) {
         this.bufferImageGraphics = bufferedImage.getGraphics();
         bufferImageGraphics.drawImage(background, 0, 0, null);
-        bufferImageGraphics.drawImage(player, planeX, planeY, null);
-        bufferImageGraphics.drawImage(player1, planeX1, planeY1, null);
-        bufferImageGraphics.drawImage(enemy1, 60, 40, null);
-        bufferImageGraphics.drawImage(enemy2, 260, 40, null);
-        bufferImageGraphics.drawImage(enemy3, 460, 40, null);
+        bufferImageGraphics.drawImage(plane1Image, plane1.x, plane1.y, null);
+        bufferImageGraphics.drawImage(plane2Image, plane2.x, plane2.y, null);
+//        bufferImageGraphics.drawImage(enemy1, 60, 40, null);
+//        bufferImageGraphics.drawImage(enemy2, 260, 40, null);
+//        bufferImageGraphics.drawImage(enemy3, 460, 40, null);
         g.drawImage(bufferedImage, 0, 0, null);
     }
 
